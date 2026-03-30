@@ -1,0 +1,45 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dummy_spatialdata"
+version = "0.1.0"
+description = "A package for creating arbitrary spatialdata for testing purposes."
+readme = "README.md"
+requires-python = ">=3.13"
+license = { text = "MIT" }
+authors = [
+  { name = "Artür Manukyan", email = "artur-man@hotmail.com" }
+]
+dependencies = [
+  "requests>=2.31",
+  "pillow==12.1.1",
+  "spatialdata==0.7.2"
+]
+
+[project.optional-dependencies]
+dev = [
+]
+
+[project.urls]
+Homepage = ""
+Repository = "https://github.com/Artur-man/dummy-spatialdata"
+
+[tool.hatch.build.targets.wheel]
+only-include = ["src/dummy_spatialdata", "examples"]
+
+[tool.hatch.build.targets.wheel.sources]
+"src" = ""
+"examples" = "dummy_spatialdata/examples"
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "/src",
+  "/README.md",
+  "/LICENSE",
+  "/examples/*"
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true

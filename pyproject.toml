@@ -15,7 +15,8 @@ authors = [
 dependencies = [
   "requests>=2.31",
   "pillow==12.1.1",
-  "spatialdata==0.7.2"
+  "spatialdata==0.7.2",
+  "spatialdata-plot==0.3.2"
 ]
 
 [project.optional-dependencies]

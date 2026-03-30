@@ -1,0 +1,51 @@
+
+
+import os
+import sys
+import numpy as np
+import spatialdata as sd
+
+from pathlib import Path
+from importlib.resources import files, as_file
+from PIL import Image
+from typing import Optional
+from spatialdata.models import Image2DModel
+
+def generate_imagemodel(
+    input: Optional[dict] = None,
+) -> Image2DModel:
+    """Generate a dummy Image2DModel object with specified elements.
+
+    Parameters
+    ----------
+    n_obs : int, optional
+        Number of observations (rows), by default 10.
+
+    Returns
+    -------
+    Image2DModel
+        An Image2DModel object populated with random data according to the specified parameters.
+    """
+
+    if input is None:
+        return None
+
+    # get source 
+    resource = files("dummy_spatialdata")
+
+    # get image type
+    if input["type"] == "rgb":
+        with as_file(resource.joinpath("examples", "bird-color.png")) as path:
+            img = np.array(Image.open(path)).astype(np.uint8)
+        img = img.transpose((2, 0, 1))
+    elif input["type"] == "grayscale":
+        with as_file(resource.joinpath("examples", "nuclei.tif")) as path:
+            img = np.array(Image.open(path)).astype(np.uint8)
+        img = img.reshape(1, *img.shape)
+    else:
+        raise ValueError("Please type either 'rgb' or 'grayscale' for the image type.")   
+    
+    # image model
+    imagemodel = Image2DModel.parse(data=img, scale_factors=(2,) * input["n_layers"])
+
+    return imagemodel

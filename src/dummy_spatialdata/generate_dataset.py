@@ -6,27 +6,36 @@ import spatialdata as sd
 from pathlib import Path
 from importlib.resources import files, as_file
 from PIL import Image
-from spatialdata.models import Image2DModel, ShapesModel, TableModel
+from typing import Optional
+from .generage_imagemodel import generate_imagemodel
 
 def generate_dataset(
+    images: Optional[list] = None,
 ) -> sd.SpatialData:
     """Generate a dummy SpatialData object with specified elements.
 
     Parameters
     ----------
-    n_obs : int, optional
-        Number of observations (rows), by default 10.
+    images: dict, optional
+        A dictionary specifying the type and number of layers for the image data.
+        Example: {"type": "rgb", "n_layers": 4} or {"type": "grayscale", "n_layers": 4}
 
     Returns
     -------
     sd.SpatialData
         A SpatialData object populated with random data according to the specified parameters.
     """
+    
+    # image model
+    images = [generate_imagemodel(img) for img in images]
+    keys = [f"image_{i}" for i in range(len(images))]
+    images = {key: img for key, img in zip(keys, images)}
 
-    resource = files("dummy_spatialdata").joinpath("examples", "bird.png")
-    with as_file(resource) as path:
-        img = np.array(Image.open(path))
-    img = img.reshape(1, *img.shape)
-    img_for_sdata = Image2DModel.parse(data=img, scale_factors=None)
+    # create a SpatialData object and add the image data
+    sdata = sd.SpatialData(
+        images=images,
+        shapes={},
+        tables={},
+    )
 
-    return img_for_sdata
+    return sdata

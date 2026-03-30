@@ -36,16 +36,28 @@ def generate_imagemodel(
     # get image type
     if input["type"] == "rgb":
         with as_file(resource.joinpath("examples", "bird-color.png")) as path:
-            img = np.array(Image.open(path)).astype(np.uint8)
+            img = Image.open(path)
+            img = resize_image(img, input)
+            img = np.array(img).astype(np.uint8)
         img = img.transpose((2, 0, 1))
     elif input["type"] == "grayscale":
         with as_file(resource.joinpath("examples", "nuclei.tif")) as path:
-            img = np.array(Image.open(path)).astype(np.uint8)
+            img = Image.open(path)
+            img = resize_image(img, input)
+            img = np.array(img).astype(np.uint8)
         img = img.reshape(1, *img.shape)
     else:
         raise ValueError("Please type either 'rgb' or 'grayscale' for the image type.")   
-    
+
     # image model
     imagemodel = Image2DModel.parse(data=img, scale_factors=(2,) * input["n_layers"])
 
     return imagemodel
+
+def resize_image(image: Image, input: dict) -> Image:
+    if "shape" not in input:
+        return image
+    new_width = input["shape"]['x']
+    new_height = input["shape"]['y']
+    resized = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+    return resized

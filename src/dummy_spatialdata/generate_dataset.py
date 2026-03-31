@@ -74,4 +74,14 @@ def generate_dataset(
         tables=tables,
     )
 
+    # map shapes to tables
+    if tables is not {}:
+        for tbl in tables.values():
+            region = tbl.uns["spatialdata_attrs"]["region"]
+            element_type = region.split("_")[0]
+            instance_key = tbl.uns["spatialdata_attrs"]["instance_key"]
+            if region in sdata._shared_keys:
+                element = getattr(sdata, element_type + "s")[region]
+                tbl.obs['instance_id'] = element.index    
+
     return sdata

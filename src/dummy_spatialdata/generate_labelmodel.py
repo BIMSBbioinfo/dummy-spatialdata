@@ -1,13 +1,8 @@
-
-
 import os
 import sys
 import numpy as np
-import spatialdata as sd
 
-from pathlib import Path
 from importlib.resources import files, as_file
-from PIL import Image
 from typing import Optional
 from spatialdata.models import Labels2DModel
 

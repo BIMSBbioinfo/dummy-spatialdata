@@ -1,9 +1,6 @@
-
-
 import os
 import sys
 import numpy as np
-import spatialdata as sd
 
 from pathlib import Path
 from importlib.resources import files, as_file

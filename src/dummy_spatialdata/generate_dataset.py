@@ -8,9 +8,11 @@ from importlib.resources import files, as_file
 from PIL import Image
 from typing import Optional
 from .generage_imagemodel import generate_imagemodel
+from .generate_labelmodel import generate_labelmodel
 
 def generate_dataset(
     images: Optional[list] = None,
+    labels: Optional[list] = None,
 ) -> sd.SpatialData:
     """Generate a dummy SpatialData object with specified elements.
 
@@ -31,10 +33,15 @@ def generate_dataset(
     keys = [f"image_{i}" for i in range(len(images))]
     images = {key: img for key, img in zip(keys, images)}
 
+    # label model
+    labels = [generate_labelmodel(lbl) for lbl in labels]
+    keys = [f"label_{i}" for i in range(len(labels))]
+    labels = {key: lbl for key, lbl in zip(keys, labels)}
+
     # create a SpatialData object and add the image data
     sdata = sd.SpatialData(
         images=images,
-        shapes={},
+        labels=labels,
         tables={},
     )
 

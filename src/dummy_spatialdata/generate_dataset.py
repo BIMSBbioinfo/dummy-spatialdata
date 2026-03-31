@@ -11,6 +11,7 @@ from .generate_imagemodel import generate_imagemodel
 from .generate_labelmodel import generate_labelmodel
 from .generate_shapemodel import generate_shapemodel
 from .generate_tablemodel import generate_tablemodel    
+from .generate_transformations import generate_transformations
 from spatialdata.models import TableModel
 
 def generate_dataset(

@@ -47,7 +47,8 @@ def generate_imagemodel(
         raise ValueError("Please type either 'rgb' or 'grayscale' for the image type.")   
 
     # image model
-    imagemodel = Image2DModel.parse(data=img, scale_factors=(2,) * (input["n_layers"]-1))
+    imagemodel = Image2DModel.parse(data=img, 
+                                    scale_factors=(2,) * (input["n_layers"]-1))
 
     return imagemodel
 

@@ -9,10 +9,12 @@ from PIL import Image
 from typing import Optional
 from .generage_imagemodel import generate_imagemodel
 from .generate_labelmodel import generate_labelmodel
+from spatialdata.models import TableModel
 
 def generate_dataset(
     images: Optional[list] = None,
     labels: Optional[list] = None,
+    tables: Optional[list] = None,
 ) -> sd.SpatialData:
     """Generate a dummy SpatialData object with specified elements.
 
@@ -38,11 +40,19 @@ def generate_dataset(
     keys = [f"label_{i}" for i in range(len(labels))]
     labels = {key: lbl for key, lbl in zip(keys, labels)}
 
+    # tables
+    if tables is None:
+        tables = {}
+    else: 
+        tables = [TableModel.parse(tbl) for tbl in tables]
+        keys = [f"table_{i}" for i in range(len(tables))]
+        tables = {key: tbl for key, tbl in zip(keys, tables)}
+
     # create a SpatialData object and add the image data
     sdata = sd.SpatialData(
         images=images,
         labels=labels,
-        tables={},
+        tables=tables,
     )
 
     return sdata

@@ -16,7 +16,8 @@ dependencies = [
   "requests>=2.31",
   "pillow==12.1.1",
   "spatialdata==0.7.2",
-  "spatialdata-plot==0.3.2"
+  "spatialdata-plot==0.3.2",
+  "dummy-anndata==0.0.3"
 ]
 
 [project.optional-dependencies]

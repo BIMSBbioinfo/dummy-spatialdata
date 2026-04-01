@@ -7,6 +7,7 @@ from importlib.resources import files, as_file
 from PIL import Image
 from typing import Optional
 from spatialdata.models import Image2DModel
+from .generate_transformations import generate_transformations
 
 def generate_imagemodel(
     input: Optional[dict] = None,
@@ -24,8 +25,13 @@ def generate_imagemodel(
         An Image2DModel object populated with random data according to the specified parameters.
     """
 
+    # check input
     if input is None:
         return None
+
+    # check transformations
+    if "transformations" not in input:
+        input["transformations"] = None
 
     # get source 
     resource = files("dummy_spatialdata")
@@ -48,7 +54,8 @@ def generate_imagemodel(
 
     # image model
     imagemodel = Image2DModel.parse(data=img, 
-                                    scale_factors=(2,) * (input["n_layers"]-1))
+                                    scale_factors=(2,) * (input["n_layers"]-1), 
+                                    transformations=generate_transformations(input["transformations"]))
 
     return imagemodel
 

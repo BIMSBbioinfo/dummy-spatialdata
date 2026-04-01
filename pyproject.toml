@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 license = { text = "MIT" }
 authors = [
-  { name = "Artür Manukyan", email = "artur-man@hotmail.com" }
+  { name = "Artür Manukyan", email = "amanukyan.umms@gmail.com" }
 ]
 dependencies = [
   "requests>=2.31",
@@ -21,14 +21,13 @@ dependencies = [
   "geopandas>=0.14",
   "shapely>=2.0.1"
 ]
+urls.Documentation = "https://dummy-spatialdata.readthedocs.io/"
+urls.Homepage = "https://github.com/Artur-man/dummy-spatialdata"
+urls.Source = "https://github.com/Artur-man/dummy-spatialdata"
 
 [project.optional-dependencies]
 dev = [
 ]
-
-[project.urls]
-Homepage = ""
-Repository = "https://github.com/Artur-man/dummy-spatialdata"
 
 [tool.hatch.build.targets.wheel]
 only-include = ["src/dummy_spatialdata", "examples"]

@@ -4,18 +4,40 @@ Allows generating dummy spatialdata objects, which can be useful for testing pur
 
 ## Installation
 
-TODO
+```bash
+pip install dummy-spatialdata
+```
 
 ## Example usage
 ```{python}
-import spatialdata as ad
-import dummy_spatialdata as ds
+from dummy_spatialdata import generate_dataset
+import dummy_anndata
+import spatialdata_plot as sdp 
+import spatialdata as sd
+import matplotlib.pyplot as plt
+import anndata as ad
 
-sdata = ds.generate_dataset(
+# generate dummy anndata
+adata = dummy_anndata.generate_dataset(n_obs=12, n_vars=20)
+
+# generate dummy spatialdata
+sdata = generate_dataset(
     images = [
-        {"type": "rgb", "n_layers": 4},
-        {"type": "grayscale", "n_layers": 0}
-    ]
+        {"type": "rgb", "n_layers": 4, "shape": {"x": 1000, "y": 1000}, "transformations": {"trans_0": ["affine"]}},
+        {"type": "grayscale", "n_layers": 1, "shape": {"x": 1000, "y": 1000}, "transformations": {"trans_0": ["affine"]}},
+    ],
+    labels = [
+        {"n_labels": 12, "n_layers": 4, "shape": {"x": 1000, "y": 1000}},
+        {"n_labels": 12, "n_layers": 0, "shape": {"x": 100, "y": 100}},
+    ], 
+    shapes = [
+        {"n_shapes": 12, "shape": {"x": 1000, "y": 1000}},
+        {"n_shapes": 20, "shape": {"x": 1000, "y": 1000}},
+    ],
+    tables = [
+        {"table": adata, "element": "shape", "element_index": 0}
+    ],
+    SEED=13
 )
 sdata
 ```
@@ -28,4 +50,9 @@ SpatialData object
 with coordinate systems:
     ▸ 'global', with elements:
         image_0 (Images), image_1 (Images)
+```
+
+```{python}
+fig, axs = plt.subplots(1, 2, figsize=(12, 5))
+sdata.pl.render_images("image_0").pl.render_shapes("shape_0", color="Gene001", table_name = "table_0", table_layer = "float_matrix").pl.show(ax=axs[0], coordinate_systems = "global")
 ```

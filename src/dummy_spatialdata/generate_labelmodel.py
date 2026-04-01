@@ -5,6 +5,7 @@ import numpy as np
 from importlib.resources import files, as_file
 from typing import Optional
 from spatialdata.models import Labels2DModel
+from .generate_transformations import generate_transformations
 
 def generate_labelmodel(
     input: Optional[dict] = None,
@@ -13,6 +14,10 @@ def generate_labelmodel(
     # return None if no input is provided
     if input is None:
         return None
+    
+    # check transformations
+    if "transformations" not in input:
+        input["transformations"] = None
     
     # generate labels
     # mask for where values should be non-zero
@@ -24,7 +29,9 @@ def generate_labelmodel(
     arr[mask] = np.random.randint(1, input["n_labels"], size=mask.sum())
 
     # image model
-    labelmodel = Labels2DModel.parse(data=arr, scale_factors=(2,) * (input["n_layers"]-1))
+    labelmodel = Labels2DModel.parse(data=arr, 
+                                     scale_factors=(2,) * (input["n_layers"]-1),
+                                     transformations = generate_transformations(input["transformations"]))
 
     return labelmodel
     

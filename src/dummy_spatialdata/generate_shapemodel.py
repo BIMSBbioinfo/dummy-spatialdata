@@ -7,6 +7,7 @@ from typing import Optional
 from spatialdata.models import ShapesModel
 import geopandas as gpd
 from shapely.geometry import Polygon, Point
+from .generate_transformations import generate_transformations
 
 def generate_shapemodel(
     input: Optional[dict] = None,
@@ -15,6 +16,10 @@ def generate_shapemodel(
 
     if input is None:
         return None
+
+    # check transformations
+    if "transformations" not in input:
+        input["transformations"] = None
 
     # generate polygons
     RADIUS = 0.08 * min(input["shape"]["x"], input["shape"]["y"])
@@ -26,7 +31,8 @@ def generate_shapemodel(
     gdf = gpd.GeoDataFrame(geometry=polygons)
 
     # shape model
-    shapemodel = ShapesModel.parse(gdf)
+    shapemodel = ShapesModel.parse(gdf, 
+                                   transformations=generate_transformations(input["transformations"]))
 
     # return shapemodel
     return gdf

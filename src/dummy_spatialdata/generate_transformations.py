@@ -3,13 +3,20 @@ from spatialdata.transformations import (
     Scale,
     Sequence,
     Translation,
-    BaseTransformation
+    BaseTransformation, 
+    Identity
 )
 
 def generate_transformations(
-    trans: Optional[list] = None
+    trans: Optional[dict] = None
 ) -> list[BaseTransformation]:
     
+    if trans is None:
+        return None
+
+    coord_system = list(trans.keys())[0]
+    trans = list(trans.items())[0][1]
+
     alltrans = []
     for tr in trans:
         if tr == "translation":
@@ -17,7 +24,7 @@ def generate_transformations(
         elif tr == "scale":
             tr = Scale([0.5, 0.5], axes = ("x", "y"))
         elif tr == "affine":
-            tr = Affine(matrix=                [
+            tr = Affine(matrix = [
                     [0.5, 0.2, 0],
                     [0.1, 0.5, 0],
                     [0, 0, 1],
@@ -29,8 +36,13 @@ def generate_transformations(
     
     if(len(alltrans) > 1):
         alltrans = Sequence(alltrans)
+    else:
+        alltrans = alltrans[0]
 
-    return alltrans
+    finaltrans = {"global": Identity()}
+    finaltrans.update({coord_system: alltrans})
+
+    return finaltrans
     
 
     

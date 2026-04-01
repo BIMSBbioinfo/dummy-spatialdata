@@ -62,7 +62,8 @@ with coordinate systems:
         image_0 (Images), image_1 (Images)
 ```
 
+You can plot the demo data now!
+
 ```{python}
-fig, axs = plt.subplots(1, 2, figsize=(12, 5))
-sdata.pl.render_images("image_0").pl.render_shapes("shape_0", color="Gene001", table_name = "table_0", table_layer = "float_matrix").pl.show(ax=axs[0], coordinate_systems = "global")
+sdata.pl.render_images("image_0", ).pl.render_shapes("shape_0", color="Gene001", table_name = "table_0", table_layer = "float_matrix").pl.show(coordinate_systems = "global")
 ```

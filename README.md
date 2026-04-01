@@ -44,11 +44,21 @@ sdata
 
 ```
 SpatialData object
-└── Images
-      ├── 'image_0': DataTree[cyx] (3, 512, 768), (3, 256, 384), (3, 128, 192), (3, 64, 96), (3, 32, 48)
-      └── 'image_1': DataTree[cyx] (1, 510, 510)
+├── Images
+│     ├── 'image_0': DataTree[cyx] (3, 1000, 1000), (3, 500, 500), (3, 250, 250), (3, 125, 125)
+│     └── 'image_1': DataTree[cyx] (1, 1000, 1000)
+├── Labels
+│     ├── 'label_0': DataTree[yx] (1000, 1000), (500, 500), (250, 250), (125, 125)
+│     └── 'label_1': DataTree[yx] (100, 100)
+├── Shapes
+│     ├── 'shape_0': GeoDataFrame shape: (12, 1) (2D shapes)
+│     └── 'shape_1': GeoDataFrame shape: (20, 1) (2D shapes)
+└── Tables
+      └── 'table_0': AnnData (12, 20)
 with coordinate systems:
     ▸ 'global', with elements:
+        image_0 (Images), image_1 (Images), label_0 (Labels), label_1 (Labels), shape_0 (Shapes), shape_1 (Shapes)
+    ▸ 'trans_0', with elements:
         image_0 (Images), image_1 (Images)
 ```
 

@@ -35,12 +35,10 @@ def generate_imagemodel(
         return None
     
     # get shape
-    print(input)
     input.update(
         {"shape": get_coordsystem_shape(coordinate_systems, 
                                         input["coordinate_system"] if "coordinate_system" in input else None)}
     )
-    print(input)
 
     # get source 
     resource = files("dummy_spatialdata")

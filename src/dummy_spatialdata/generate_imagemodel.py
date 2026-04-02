@@ -12,7 +12,8 @@ from .generate_transformations import generate_transformations
 
 def generate_imagemodel(
     input: Optional[dict] = None,
-    key: Optional[str] = None
+    key: Optional[str] = None,
+    transformations: Optional[dict] = None
 ) -> Image2DModel:
     """Generate a dummy Image2DModel object with specified elements.
 
@@ -50,18 +51,20 @@ def generate_imagemodel(
         img = img.reshape(1, *img.shape)
     else:
         raise ValueError("Please type either 'rgb' or 'grayscale' for the image type.")   
+    
+    # get transformations
+    if "transformations" in input:
+        if input["transformations"] in transformations:
+            trans = {input["transformations"]: transformations[input["transformations"]]}
+        else: 
+            trans = {key: Identity()}
+    else:
+        trans = {key: Identity()}
 
     # image model
     imagemodel = Image2DModel.parse(data=img, 
                                     scale_factors=(2,) * (input["n_layers"]-1), 
-                                    transformations = {key: Identity()})
-
-    # generate transformations
-    if "transformations" in input:
-        trans =  generate_transformations(input["transformations"])    
-        for x in trans.keys():
-            set_transformation(imagemodel,
-                               transformation = trans[x], to_coordinate_system = x)
+                                    transformations = trans)
 
     return imagemodel
 

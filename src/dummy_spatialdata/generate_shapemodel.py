@@ -13,6 +13,7 @@ from .generate_transformations import generate_transformations
 def generate_shapemodel(
     input: Optional[dict] = None,
     key: Optional[str] = None,
+    transformations: Optional[dict] = None,
     SEED: Optional[int] = 42
 ) -> ShapesModel:
 
@@ -28,17 +29,19 @@ def generate_shapemodel(
     polygons = [Polygon(border_polygon_points(c, RADIUS, 10, SEED = seed)) for c, seed in zip(centers, polygon_seeds)]
     gdf = gpd.GeoDataFrame(geometry=polygons)
 
+    # get transformations
+    if "transformations" in input:
+        if input["transformations"] in transformations:
+            trans = {input["transformations"]: transformations[input["transformations"]]}
+        else: 
+            trans = {key: Identity()}
+    else:
+        trans = {key: Identity()}
+
     # shape model
     shapemodel = ShapesModel.parse(gdf, 
-                                   transformations = {key: Identity()})
-
-    # generate transformations
-    if "transformations" in input:
-        trans =  generate_transformations(input["transformations"])    
-        for x in trans.keys():
-            set_transformation(shapemodel,
-                               transformation = trans[x], to_coordinate_system = x)
-
+                                   transformations = trans)
+    
     return shapemodel
 
 def circles_overlap(c1, c2, radius, min_gap=0.0):

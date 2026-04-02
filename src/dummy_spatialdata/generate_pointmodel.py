@@ -13,6 +13,7 @@ from .generate_transformations import generate_transformations
 def generate_pointmodel(
     input: Optional[dict] = None,
     key: Optional[str] = None,
+    transformations: Optional[dict] = None,
     SEED: Optional[int] = 42
 ) -> pd.DataFrame:
 
@@ -25,16 +26,18 @@ def generate_pointmodel(
 
     df = generate_points(input["shape"]["x"], input["shape"]["y"], input["n_points"], SEED)
 
+    # get transformations
+    if "transformations" in input:
+        if input["transformations"] in transformations:
+            trans = {input["transformations"]: transformations[input["transformations"]]}
+        else: 
+            trans = {key: Identity()}
+    else:
+        trans = {key: Identity()}
+
     # point model
     pointmodel = PointsModel.parse(df, 
-                                   transformations = {key: Identity()})
-
-    # generate transformations
-    if "transformations" in input:
-        trans =  generate_transformations(input["transformations"])    
-        for x in trans.keys():
-            set_transformation(pointmodel,
-                               transformation = trans[x], to_coordinate_system = x)
+                                   transformations = trans)
 
     return pointmodel
 

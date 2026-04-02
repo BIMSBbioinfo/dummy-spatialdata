@@ -10,7 +10,8 @@ from .generate_transformations import generate_transformations
 
 def generate_labelmodel(
     input: Optional[dict] = None,
-    key: Optional[str] = None
+    key: Optional[str] = None,
+    transformations: Optional[dict] = None
 ) -> Labels2DModel:
     
     # return None if no input is provided
@@ -26,17 +27,19 @@ def generate_labelmodel(
     mask = np.random.rand(rows, cols) < prob_nonzero
     arr[mask] = np.random.randint(1, input["n_labels"], size=mask.sum())
 
+    # get transformations
+    if "transformations" in input:
+        if input["transformations"] in transformations:
+            trans = {input["transformations"]: transformations[input["transformations"]]}
+        else: 
+            trans = {key: Identity()}
+    else:
+        trans = {key: Identity()}
+
     # image model
     labelmodel = Labels2DModel.parse(data=arr, 
                                      scale_factors=(2,) * (input["n_layers"]-1),
-                                    transformations = {key: Identity()})
-
-    # generate transformations
-    if "transformations" in input:
-        trans =  generate_transformations(input["transformations"])    
-        for x in trans.keys():
-            set_transformation(labelmodel,
-                               transformation = trans[x], to_coordinate_system = x)
+                                     transformations = trans)
         
     return labelmodel
     

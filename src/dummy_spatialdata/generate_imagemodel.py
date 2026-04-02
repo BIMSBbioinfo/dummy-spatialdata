@@ -8,12 +8,13 @@ from PIL import Image
 from typing import Optional
 from spatialdata.models import Image2DModel
 from spatialdata.transformations import set_transformation, Identity
-from .generate_transformations import generate_transformations
+from .generate_transformations import generate_transformations, get_coordsystem_transformations, get_coordsystem_shape
+from .utils import default_shape
 
 def generate_imagemodel(
     input: Optional[dict] = None,
     key: Optional[str] = None,
-    transformations: Optional[dict] = None
+    coordinate_systems: Optional[dict] = None
 ) -> Image2DModel:
     """Generate a dummy Image2DModel object with specified elements.
 
@@ -32,6 +33,14 @@ def generate_imagemodel(
     # check input
     if input is None:
         return None
+    
+    # get shape
+    print(input)
+    input.update(
+        {"shape": get_coordsystem_shape(coordinate_systems, 
+                                        input["coordinate_system"] if "coordinate_system" in input else None)}
+    )
+    print(input)
 
     # get source 
     resource = files("dummy_spatialdata")
@@ -53,9 +62,11 @@ def generate_imagemodel(
         raise ValueError("Please type either 'rgb' or 'grayscale' for the image type.")   
     
     # get transformations
-    if "transformations" in input:
-        if input["transformations"] in transformations:
-            trans = {input["transformations"]: transformations[input["transformations"]]}
+    coord_systems = get_coordsystem_transformations(coordinate_systems)
+    if "coordinate_system" in input:
+        coord_system = input["coordinate_system"]
+        if coord_system in coord_systems:
+            trans = {coord_system: coord_systems[coord_system]}
         else: 
             trans = {key: Identity()}
     else:

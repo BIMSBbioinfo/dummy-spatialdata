@@ -7,6 +7,7 @@ from .generate_shapemodel import generate_shapemodel
 from .generate_pointmodel import generate_pointmodel
 from .generate_tablemodel import generate_tablemodel
 from .generate_transformations import generate_transformations
+from .utils import default_shape
 
 __all__ = [
     "generate_dataset",
@@ -15,7 +16,8 @@ __all__ = [
     "generate_shapemodel",
     "generate_pointmodel"
     "generate_tablemodel",
-    "generate_transformations"
+    "generate_transformations",
+    "utils"
 ]
 
 __version__ = version("dummy-spatialdata")

@@ -8,6 +8,7 @@ from PIL import Image
 from typing import Optional
 from spatialdata.models import TableModel
 import spatialdata as sd
+from .utils import default_shape
 
 def generate_tablemodel(
     input: Optional[dict] = None

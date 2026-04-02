@@ -8,17 +8,24 @@ from spatialdata.models import PointsModel
 from spatialdata.transformations import set_transformation, Identity
 import pandas as pd
 from shapely.geometry import Point
-from .generate_transformations import generate_transformations
+from .generate_transformations import generate_transformations, get_coordsystem_transformations, get_coordsystem_shape
+from .utils import default_shape
 
 def generate_pointmodel(
     input: Optional[dict] = None,
     key: Optional[str] = None,
-    transformations: Optional[dict] = None,
+    coordinate_systems: Optional[dict] = None,
     SEED: Optional[int] = 42
 ) -> pd.DataFrame:
 
     if input is None:
         return None
+
+    # get shape
+    input.update(
+        {"shape": get_coordsystem_shape(coordinate_systems, 
+                                        input["coordinate_system"] if "coordinate_system" in input else None)}
+    )
 
     # generate points
     RADIUS = 0.08 * min(input["shape"]["x"], input["shape"]["y"])
@@ -27,9 +34,11 @@ def generate_pointmodel(
     df = generate_points(input["shape"]["x"], input["shape"]["y"], input["n_points"], SEED)
 
     # get transformations
-    if "transformations" in input:
-        if input["transformations"] in transformations:
-            trans = {input["transformations"]: transformations[input["transformations"]]}
+    coord_systems = get_coordsystem_transformations(coordinate_systems)
+    if "coordinate_system" in input:
+        coord_system = input["coordinate_system"]
+        if coord_system in coord_systems:
+            trans = {coord_system: coord_systems[coord_system]}
         else: 
             trans = {key: Identity()}
     else:

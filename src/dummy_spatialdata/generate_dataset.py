@@ -37,42 +37,34 @@ def generate_dataset(
     sd.SpatialData
         A SpatialData object populated with random data according to the specified parameters.
     """
-
-    # transformations
-    transformations = {}
-    if coordinate_systems is not None:
-        for i in coordinate_systems.keys():
-            transformations.update(
-                generate_transformations({i: coordinate_systems[i]})
-            )
     
     # image model
     if images is None:
         images = {}
     else: 
         keys = [f"image_{i}" for i in range(len(images))]
-        images = {key: generate_imagemodel(img, key, transformations) for img, key in zip(images, keys)}
+        images = {key: generate_imagemodel(img, key, coordinate_systems) for img, key in zip(images, keys)}
 
     # label model
     if labels is None:
         labels = {}
     else: 
         keys = [f"label_{i}" for i in range(len(labels))]
-        labels = {key: generate_labelmodel(lbl, key, transformations) for lbl, key in zip(labels, keys)}
+        labels = {key: generate_labelmodel(lbl, key, coordinate_systems) for lbl, key in zip(labels, keys)}
 
     # shape model
     if shapes is None:
         shapes = {}
     else: 
         keys = [f"shape_{i}" for i in range(len(shapes))]
-        shapes = {key: generate_shapemodel(shp, key, transformations, SEED) for shp, key in zip(shapes, keys)}
+        shapes = {key: generate_shapemodel(shp, key, coordinate_systems, SEED) for shp, key in zip(shapes, keys)}
 
     # shape model
     if points is None:
         points = {}
     else: 
         keys = [f"point_{i}" for i in range(len(points))]
-        points = {key: generate_pointmodel(shp, key, transformations, SEED) for shp, key in zip(points, keys)}
+        points = {key: generate_pointmodel(shp, key, coordinate_systems, SEED) for shp, key in zip(points, keys)}
 
     # tables
     if tables is None:

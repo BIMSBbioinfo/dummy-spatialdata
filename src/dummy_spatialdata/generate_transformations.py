@@ -1,3 +1,5 @@
+from .utils import default_shape   
+from typing import Optional
 from spatialdata.transformations import (
     Affine,
     Scale,
@@ -16,10 +18,6 @@ def generate_transformations(
     trans : dict, optional
         A dictionary specifying the transformations to be applied and their parameters.
         Example: {"image_0": ["identity", "translation", "scale"]} or {"image_0": ["affine"]}
-    key : str, optional
-        The key corresponding to the coordinate system for which the transformations are to be generated.
-        This is used when the input transformations are not specified, and the function defaults to an identity
-        transformation for the given key.
     Returns
     -------
     list[BaseTransformation]
@@ -37,7 +35,7 @@ def generate_transformations(
         return None
 
     coord_system = list(trans.keys())[0]
-    trans = list(trans.items())[0][1]
+    trans = list(trans.items())[0][1]["transformations"]
 
     alltrans = []
     for tr in trans:
@@ -67,5 +65,29 @@ def generate_transformations(
 
     return {coord_system: alltrans}
     
+def get_coordsystem_shape(
+    coordinate_systems: Optional[dict] = None,
+    coord_system: Optional[str] = None
+) -> dict:
+    if coordinate_systems is not None:
+        if coord_system is not None:
+            shape = coordinate_systems[coord_system]["shape"]
+        else:
+            shape = default_shape()   
+    else:
+        shape = default_shape()   
+    return shape
+        
+def get_coordsystem_transformations(
+    coordinate_systems: Optional[dict] = None
+) -> dict:
+    # transformations
+    coord_systems = {}
+    if coordinate_systems is not None:
+        for i in coordinate_systems.keys():
+            coord_systems.update(
+                generate_transformations({i: coordinate_systems[i]})
+            )
+    return coord_systems
 
     

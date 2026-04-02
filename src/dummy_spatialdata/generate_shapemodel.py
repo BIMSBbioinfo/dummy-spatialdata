@@ -5,21 +5,19 @@ import numpy as np
 from importlib.resources import files, as_file
 from typing import Optional
 from spatialdata.models import ShapesModel
+from spatialdata.transformations import set_transformation, Identity
 import geopandas as gpd
-from shapely.geometry import Polygon, Point
+from shapely.geometry import Polygon
 from .generate_transformations import generate_transformations
 
 def generate_shapemodel(
     input: Optional[dict] = None,
+    key: Optional[str] = None,
     SEED: Optional[int] = 42
 ) -> ShapesModel:
 
     if input is None:
         return None
-
-    # check transformations
-    if "transformations" not in input:
-        input["transformations"] = None
 
     # generate polygons
     RADIUS = 0.08 * min(input["shape"]["x"], input["shape"]["y"])
@@ -32,10 +30,16 @@ def generate_shapemodel(
 
     # shape model
     shapemodel = ShapesModel.parse(gdf, 
-                                   transformations=generate_transformations(input["transformations"]))
+                                   transformations = {key: Identity()})
 
-    # return shapemodel
-    return gdf
+    # generate transformations
+    if "transformations" in input:
+        trans =  generate_transformations(input["transformations"])    
+        for x in trans.keys():
+            set_transformation(shapemodel,
+                               transformation = trans[x], to_coordinate_system = x)
+
+    return shapemodel
 
 def circles_overlap(c1, c2, radius, min_gap=0.0):
     x1, y1 = c1

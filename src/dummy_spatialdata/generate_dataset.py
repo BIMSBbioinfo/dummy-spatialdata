@@ -10,6 +10,7 @@ from typing import Optional
 from .generate_imagemodel import generate_imagemodel
 from .generate_labelmodel import generate_labelmodel
 from .generate_shapemodel import generate_shapemodel
+from .generate_pointmodel import generate_pointmodel
 from .generate_tablemodel import generate_tablemodel    
 from .generate_transformations import generate_transformations
 from spatialdata.models import TableModel
@@ -18,6 +19,7 @@ def generate_dataset(
     images: Optional[list] = None,
     labels: Optional[list] = None,
     shapes: Optional[list] = None,
+    points: Optional[list] = None,
     tables: Optional[list] = None,
     SEED: Optional[int] = 42
 ) -> sd.SpatialData:
@@ -39,39 +41,43 @@ def generate_dataset(
     if images is None:
         images = {}
     else: 
-        images = [generate_imagemodel(img) for img in images]
         keys = [f"image_{i}" for i in range(len(images))]
-        images = {key: img for key, img in zip(keys, images)}
+        images = {key: generate_imagemodel(img, key) for img, key in zip(images, keys)}
 
     # label model
     if labels is None:
         labels = {}
     else: 
-        labels = [generate_labelmodel(lbl) for lbl in labels]
         keys = [f"label_{i}" for i in range(len(labels))]
-        labels = {key: lbl for key, lbl in zip(keys, labels)}
+        labels = {key: generate_labelmodel(lbl, key) for lbl, key in zip(labels, keys)}
 
     # shape model
     if shapes is None:
         shapes = {}
     else: 
-        shapes = [generate_shapemodel(shp, SEED) for shp in shapes]
         keys = [f"shape_{i}" for i in range(len(shapes))]
-        shapes = {key: shp for key, shp in zip(keys, shapes)}
+        shapes = {key: generate_shapemodel(shp, key, SEED) for shp, key in zip(shapes, keys)}
+
+    # shape model
+    if points is None:
+        points = {}
+    else: 
+        keys = [f"point_{i}" for i in range(len(points))]
+        points = {key: generate_pointmodel(shp, key, SEED) for shp, key in zip(points, keys)}
 
     # tables
     if tables is None:
         tables = {}
     else: 
-        tables = [generate_tablemodel(tbl) for tbl in tables]
         keys = [f"table_{i}" for i in range(len(tables))]
-        tables = {key: tbl for key, tbl in zip(keys, tables)}
+        tables = {key: generate_tablemodel(tbl) for tbl, key in zip(tables, keys)}
 
     # create a SpatialData object and add the image data
     sdata = sd.SpatialData(
         images=images,
         labels=labels,
         shapes=shapes,
+        points=points,
         tables=tables,
     )
 

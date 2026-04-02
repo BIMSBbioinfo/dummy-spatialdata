@@ -21,13 +21,21 @@ dependencies = [
   "geopandas>=0.14",
   "shapely>=2.0.1"
 ]
+optional-dependencies.dev = [
+  "pre-commit",
+  "twine>=4.0.2",
+]
+optional-dependencies.test = [
+  "coverage",
+  "pytest",
+]
+# https://docs.pypi.org/project_metadata/#project-urls
 urls.Documentation = "https://dummy-spatialdata.readthedocs.io/"
 urls.Homepage = "https://github.com/Artur-man/dummy-spatialdata"
 urls.Source = "https://github.com/Artur-man/dummy-spatialdata"
 
-[project.optional-dependencies]
-dev = [
-]
+[tool.hatch.envs.hatch-test]
+features = [ "test" ]
 
 [tool.hatch.build.targets.wheel]
 only-include = ["src/dummy_spatialdata", "examples"]

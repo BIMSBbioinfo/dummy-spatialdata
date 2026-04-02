@@ -10,8 +10,7 @@ from spatialdata.models import TableModel
 import spatialdata as sd
 
 def generate_tablemodel(
-    input: Optional[dict] = None,
-    sdata: sd.SpatialData = None
+    input: Optional[dict] = None
 ) -> TableModel:
 
     if input is None:

@@ -7,10 +7,12 @@ from importlib.resources import files, as_file
 from PIL import Image
 from typing import Optional
 from spatialdata.models import Image2DModel
+from spatialdata.transformations import set_transformation, Identity
 from .generate_transformations import generate_transformations
 
 def generate_imagemodel(
     input: Optional[dict] = None,
+    key: Optional[str] = None
 ) -> Image2DModel:
     """Generate a dummy Image2DModel object with specified elements.
 
@@ -18,6 +20,7 @@ def generate_imagemodel(
     ----------
     n_obs : int, optional
         Number of observations (rows), by default 10.
+    
 
     Returns
     -------
@@ -28,10 +31,6 @@ def generate_imagemodel(
     # check input
     if input is None:
         return None
-
-    # check transformations
-    if "transformations" not in input:
-        input["transformations"] = None
 
     # get source 
     resource = files("dummy_spatialdata")
@@ -55,7 +54,14 @@ def generate_imagemodel(
     # image model
     imagemodel = Image2DModel.parse(data=img, 
                                     scale_factors=(2,) * (input["n_layers"]-1), 
-                                    transformations=generate_transformations(input["transformations"]))
+                                    transformations = {key: Identity()})
+
+    # generate transformations
+    if "transformations" in input:
+        trans =  generate_transformations(input["transformations"])    
+        for x in trans.keys():
+            set_transformation(imagemodel,
+                               transformation = trans[x], to_coordinate_system = x)
 
     return imagemodel
 

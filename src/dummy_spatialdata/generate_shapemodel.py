@@ -17,6 +17,31 @@ def generate_shapemodel(
     coordinate_systems: Optional[dict] = None,
     SEED: Optional[int] = 42
 ) -> ShapesModel:
+    """Generate a dummy ShapesModel object with specified elements.
+
+    Parameters
+    ----------
+    input : int, optional
+        A dictionary of key value pairs with 
+            - number of polygon shapes, 
+            - name of the coordinate_system (see "coordinate_systems" parameter)
+        Example: 
+            [{"n_shapes": 12, "coordinate_system": "global"}]
+    
+    key: str
+        the name of the element
+
+    coordinate_systems: 
+        A set of coordinate systems
+
+    SEED: int
+        The seed value
+
+    Returns
+    -------
+    ShapesModel
+        An ShapesModel object populated with random data according to the specified parameters.
+    """
 
     if input is None:
         return None

@@ -16,7 +16,32 @@ def generate_pointmodel(
     key: Optional[str] = None,
     coordinate_systems: Optional[dict] = None,
     SEED: Optional[int] = 42
-) -> pd.DataFrame:
+) -> PointsModel:
+    """Generate a dummy PointsModel object with specified elements.
+
+    Parameters
+    ----------
+    input : int, optional
+        A dictionary of key value pairs with 
+            - number of points, 
+            - name of the coordinate_system (see "coordinate_systems" parameter)
+        Example: 
+            {"n_points": 12, "coordinate_system": "global"}
+    
+    key: str
+        the name of the element
+
+    coordinate_systems: 
+        A set of coordinate systems
+
+    SEED: int
+        The seed value
+        
+    Returns
+    -------
+    PointsModel
+        An PointsModel object populated with random data according to the specified parameters.
+    """
 
     if input is None:
         return None

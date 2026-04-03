@@ -28,14 +28,64 @@ def generate_dataset(
 
     Parameters
     ----------
-    images: dict, optional
-        A dictionary specifying the type and number of layers for the image data.
-        Example: {"type": "rgb", "n_layers": 4} or {"type": "grayscale", "n_layers": 4}
+    images: list[dict], optional
+        A list of dictionaries, each specifying 
+            - the type ("rgb", "grayscale), 
+            - number of layers for the image pyramid (or a single image) and 
+            - name of the coordinate_system (see "coordinate_systems" parameter)
+        Example: 
+            [{"type": "rgb", "n_layers": 4}] or
+            [{"type": "grayscale", "n_layers": 4}] or 
+            [{"type": "rgb", "n_layers": 4, coordinate_system: "global}, {"type": "grayscale", "n_layers": 4}]
+
+    labels: list[dict], optional
+        A list of dictionaries, each specifying 
+            - number of labels, 
+            - number of layers for the label mask pyramid (or a single mask) and 
+            - name of the coordinate_system (see "coordinate_systems" parameter)
+        Example: 
+            [{"n_labels": 12, "n_layers": 4, "coordinate_system": "global"}]
+
+    shapes: list[dict], optional
+        A list of dictionaries, each specifying 
+            - number of polygon shapes, 
+            - name of the coordinate_system (see "coordinate_systems" parameter)
+        Example: 
+            [{"n_shapes": 12, "coordinate_system": "global"}]
+
+    points: list[dict], optional
+        A list of dictionaries, each specifying 
+            - number of points, 
+            - name of the coordinate_system (see "coordinate_systems" parameter)
+        Example: 
+            [{"n_points": 12, "coordinate_system": "global"}]
+
+    tables: list[AnnData], optional
+        A list of dictionaries, each specifying
+            - an AnnData object
+            - type of linked element, "shape" or "point" 
+            - the index of the linked element
+        Example: 
+            [{"table": dummy_anndata.generate_dataset(n_obs=12, n_vars=20), "element": "shape", "element_index": 0}]
+            [
+                {"table": dummy_anndata.generate_dataset(n_obs=12, n_vars=20), "element": "shape", "element_index": 0},
+                {"table": dummy_anndata.generate_dataset(n_obs=20, n_vars=20), "element": "shape", "element_index": 1}
+            ]
+    
+    coordinate_systems: dict[dict]
+        A dict of dictionaries, where keys are names of coordinate systems and each value specifying
+            - a list of (or a single) transformation(s), 
+            - shape of the input axes
+        Example: 
+            {
+                "global": {"transformations": ["affine"], "shape": {"x": 2000, "y": 2000}},
+                "global2": {"transformations": ["scale", "translation"], "shape":{"x": 500, "y": 500}}
+            },
 
     Returns
     -------
     sd.SpatialData
-        A SpatialData object populated with random data according to the specified parameters.
+        A SpatialData object populated with custom elements according to the specified parameters.
     """
     
     # image model

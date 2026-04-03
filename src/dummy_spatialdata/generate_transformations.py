@@ -13,22 +13,27 @@ def generate_transformations(
     trans: Optional[dict] = None
 ) -> list[BaseTransformation]:
     """Generate a list of transformations based on the specified input.
+
     Parameters
     ----------  
     trans : dict, optional
         A dictionary specifying the transformations to be applied and their parameters.
         Example: {"image_0": ["identity", "translation", "scale"]} or {"image_0": ["affine"]}
+
     Returns
     -------
     list[BaseTransformation]
         A list of transformation objects corresponding to the specified transformations in the input.
-    Notes    -----
+    
+    Notes   
+    -----
     The function recognizes the following transformation types:
     - "identity": No transformation is applied.
     - "translation": A translation transformation with a fixed translation vector (e.g., [10, 20]).
     - "scale": A scaling transformation with fixed scale factors (e.g., [0.5, 0.5]).
     - "affine": An affine transformation with a fixed transformation matrix.
-    If the input transformations are not specified, the function defaults to an identity transformation for the given key.  
+    if multiple transformations are given, the resulting transformation will be a `Sequence` type.
+
     """
 
     if trans is None:

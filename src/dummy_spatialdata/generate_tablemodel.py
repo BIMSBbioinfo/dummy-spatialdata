@@ -13,6 +13,23 @@ from .utils import default_shape
 def generate_tablemodel(
     input: Optional[dict] = None
 ) -> TableModel:
+    """Generate a dummy TableModel object with specified elements.
+
+    Parameters
+    ----------
+    table: dict
+        A dictionary of key value pairs with 
+            - an AnnData object
+            - type of linked element, "shape" or "point" 
+            - the index of the linked element
+        Example: 
+            {"table": dummy_anndata.generate_dataset(n_obs=12, n_vars=20), "element": "shape", "element_index": 0}
+
+    Returns
+    -------
+    TableModel
+        An TableModel object populated with random data according to the specified parameters.
+    """
 
     if input is None:
         return None

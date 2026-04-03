@@ -14,6 +14,29 @@ def generate_labelmodel(
     key: Optional[str] = None,
     coordinate_systems: Optional[dict] = None
 ) -> Labels2DModel:
+    """Generate a dummy Labels2DModel object with specified elements.
+
+    Parameters
+    ----------
+    input : int, optional
+        A dictionary of key value pairs with 
+            - number of labels, 
+            - number of layers for the label mask pyramid (or a single mask) and 
+            - name of the coordinate_system (see "coordinate_systems" parameter)
+        Example: 
+            {"n_labels": 12, "n_layers": 4, "coordinate_system": "global"}
+    
+    key: str
+        the name of the element
+
+    coordinate_systems: 
+        A set of coordinate systems
+
+    Returns
+    -------
+    Labels2DModel
+        An Labels2DModel object populated with random data according to the specified parameters.
+    """
     
     # return None if no input is provided
     if input is None:
@@ -24,7 +47,7 @@ def generate_labelmodel(
         {"shape": get_coordsystem_shape(coordinate_systems, 
                                         input["coordinate_system"] if "coordinate_system" in input else None)}
     )
-    
+
     # generate labels
     # mask for where values should be non-zero
     rows, cols = input["shape"]["x"], input["shape"]["y"],

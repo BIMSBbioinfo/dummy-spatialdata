@@ -20,9 +20,20 @@ def generate_imagemodel(
 
     Parameters
     ----------
-    n_obs : int, optional
-        Number of observations (rows), by default 10.
+    input : int, optional
+        A dictionary of key value pairs with 
+            - the type ("rgb", "grayscale), 
+            - number of layers for the image pyramid (or a single image) and 
+            - name of the coordinate_system (see "coordinate_systems" parameter)
+        Example: 
+            [{"type": "rgb", "n_layers": 4}] or
+            [{"type": "grayscale", "n_layers": 4, "coordinate_systems": "global"}]
     
+    key: str
+        the name of the element
+
+    coordinate_systems: 
+        A set of coordinate systems
 
     Returns
     -------

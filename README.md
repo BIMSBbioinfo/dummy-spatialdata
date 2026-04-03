@@ -9,6 +9,14 @@ pip install dummy-spatialdata
 ```
 
 ## Example usage
+
+`dummy-spatialdata` is compatible with both spatialdata == 0.5.0 (zarr v2) and 0.7.2 (zarr v3)
+
+Thus please use 
+
+1. `conda create --name dummy_sd_env python==3.12 spatialdata==0.7.2` or 
+2. `conda create --name dummy_sd_env_05 python==3.12 spatialdata==0.5.0 setuptools==75.8.0`
+
 ```{python}
 from dummy_spatialdata import generate_dataset
 import dummy_anndata

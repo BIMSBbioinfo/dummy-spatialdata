@@ -25,30 +25,33 @@ import spatialdata as sd
 import matplotlib.pyplot as plt
 import anndata as ad
 
-# generate dummy anndata
+# generate anndata
 adata = dummy_anndata.generate_dataset(n_obs=12, n_vars=20)
+
+# generate spatialdata
 sdata = generate_dataset(
     images = [
-        {"type": "rgb", "n_layers": 4, "coordinate_system": "global"},
-        {"type": "grayscale", "n_layers": 1, "coordinate_system": "global"},
+        {'type': 'rgb', 'scale_factors': [2,2,2], 'coordinate_system': 'global'},
+        {'type': 'grayscale', 'coordinate_system': 'global'},
     ],
     labels = [
-        {"n_labels": 12, "n_layers": 4, "coordinate_system": "global2"},
-        {"n_labels": 12, "n_layers": 0, "coordinate_system": "global2"},
+        {'n': 12, 'scale_factors': [2,2,3], 'coordinate_system': 'global2'},
+        {'n': 12, 'coordinate_system': 'global2'},
     ], 
     shapes = [
-        {"n_shapes": 12, "coordinate_system": "global"},
-        {"n_shapes": 20},
+        {'n': 12, 'type': 'circle', 'coordinate_system': 'global'},
+        {'n': 20, 'type': 'circle'},
     ],
     points = [
-        {"n_points": 12}
+        {'n': 12}
     ],
     tables = [
-        {"table": adata, "element": "shape", "element_index": 0}
+        {'table': adata, 'element': 'shape', 'element_index': 0}
     ],
     coordinate_systems = {
-        "global": {"transformations": ["affine"], "shape": {"x": 2000, "y": 2000}},
-        "global2": {"transformations": ["scale", "translation"], "shape":{"x": 500, "y": 500}}},
+        'global': {'transformations': ['affine'], 'shape': {'x': 2000, 'y': 2000}},
+        'global2': {'transformations': ['scale', 'translation'], 'shape':{'x': 500, 'y': 500}}
+    },
     SEED=13
 )
 sdata
@@ -60,13 +63,13 @@ SpatialData object
 │     ├── 'image_0': DataTree[cyx] (3, 2000, 2000), (3, 1000, 1000), (3, 500, 500), (3, 250, 250)
 │     └── 'image_1': DataTree[cyx] (1, 2000, 2000)
 ├── Labels
-│     ├── 'label_0': DataTree[yx] (500, 500), (250, 250), (125, 125), (62, 62)
+│     ├── 'label_0': DataTree[yx] (500, 500), (250, 250), (125, 125), (41, 41)
 │     └── 'label_1': DataTree[yx] (500, 500)
 ├── Points
 │     └── 'point_0': DataFrame with shape: (<Delayed>, 2) (2D points)
 ├── Shapes
-│     ├── 'shape_0': GeoDataFrame shape: (12, 1) (2D shapes)
-│     └── 'shape_1': GeoDataFrame shape: (20, 1) (2D shapes)
+│     ├── 'shape_0': GeoDataFrame shape: (12, 2) (2D shapes)
+│     └── 'shape_1': GeoDataFrame shape: (20, 2) (2D shapes)
 └── Tables
       └── 'table_0': AnnData (12, 20)
 with coordinate systems:
@@ -83,5 +86,5 @@ with coordinate systems:
 You can plot the demo data now!
 
 ```{python}
-sdata.pl.render_images("image_0").pl.render_shapes("shape_0", color="Gene001", table_name = "table_0", table_layer = "float_matrix").pl.show(coordinate_systems = "global")
+sdata.pl.render_images('image_0').pl.render_shapes('shape_0', color='Gene001', table_name = 'table_0', table_layer = 'float_matrix').pl.show(coordinate_systems = 'global')
 ```

@@ -6,7 +6,11 @@ from .generate_labelmodel import generate_labelmodel
 from .generate_shapemodel import generate_shapemodel
 from .generate_pointmodel import generate_pointmodel
 from .generate_tablemodel import generate_tablemodel
-from .generate_transformations import generate_transformations
+from .generate_transformations import (
+    generate_transformations,
+    get_basetransformations,
+    get_shape
+)
 from .utils import default_shape
 
 __all__ = [

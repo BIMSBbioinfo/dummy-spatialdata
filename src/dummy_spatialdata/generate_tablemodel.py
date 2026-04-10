@@ -20,10 +20,10 @@ def generate_tablemodel(
     table: dict
         A dictionary of key value pairs with 
             - an AnnData object
-            - type of linked element, "shape" or "point" 
+            - type of linked element, 'shape' or 'point' 
             - the index of the linked element
         Example: 
-            {"table": dummy_anndata.generate_dataset(n_obs=12, n_vars=20), "element": "shape", "element_index": 0}
+            {'table': dummy_anndata.generate_dataset(n_obs=12, n_vars=20), 'element': 'shape', 'element_index': 0}
 
     Returns
     -------
@@ -35,13 +35,13 @@ def generate_tablemodel(
         return None
 
     # add metadata to table
-    region = input["element"] + "_" + str(input["element_index"])
-    input["table"].obs['instance_id'] = input["table"].obs.index
-    input["table"].obs['region'] = region
-    input["table"].uns["spatialdata_attrs"] = {
-        "region": region,
-        "region_key": "region",
-        "instance_key": "instance_id",
+    region = input['element'] + '_' + str(input['element_index'])
+    input['table'].obs['instance_id'] = input['table'].obs.index
+    input['table'].obs['region'] = region
+    input['table'].uns['spatialdata_attrs'] = {
+        'region': region,
+        'region_key': 'region',
+        'instance_key': 'instance_id',
     }
 
-    return TableModel.parse(input["table"])
+    return TableModel.parse(input['table'])

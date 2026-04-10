@@ -7,8 +7,8 @@ from typing import Optional
 from spatialdata.models import ShapesModel
 from spatialdata.transformations import set_transformation, Identity
 import geopandas as gpd
-from shapely.geometry import Polygon
-from .generate_transformations import generate_transformations, get_coordsystem_transformations, get_coordsystem_shape
+from shapely.geometry import Polygon, Point
+from .generate_transformations import generate_transformations, get_basetransformations, get_shape
 from .utils import default_shape
 
 def generate_shapemodel(
@@ -23,10 +23,11 @@ def generate_shapemodel(
     ----------
     input : int, optional
         A dictionary of key value pairs with 
-            - number of polygon shapes, 
-            - name of the coordinate_system (see "coordinate_systems" parameter)
+            - n: number of polygon shapes, 
+            - type: geometry of the shapes, either 'polygon' or 'circle'
+            - name of the coordinate_system (see 'coordinate_systems' parameter)
         Example: 
-            [{"n_shapes": 12, "coordinate_system": "global"}]
+            {'n': 12, 'type': 'polygon', 'coordinate_system': 'global'}
     
     key: str
         the name of the element
@@ -48,23 +49,30 @@ def generate_shapemodel(
 
     # get shape
     input.update(
-        {"shape": get_coordsystem_shape(coordinate_systems, 
-                                        input["coordinate_system"] if "coordinate_system" in input else None)}
+        {'shape': get_shape(coordinate_systems, 
+                            input['coordinate_system'] if 'coordinate_system' in input else None)}
     )
 
     # generate polygons
-    RADIUS = 0.08 * min(input["shape"]["x"], input["shape"]["y"])
-    MIN_GAP = 0.01 * min(input["shape"]["x"], input["shape"]["y"])
+    RADIUS = 0.08 * min(input['shape']['x'], input['shape']['y'])
+    MIN_GAP = 0.01 * min(input['shape']['x'], input['shape']['y'])
 
-    centers = generate_non_overlapping_centers(input["shape"]["x"], input["shape"]["y"], RADIUS, input["n_shapes"], MIN_GAP, SEED)
-    polygon_seeds = [SEED + i for i in range(input["n_shapes"])]
-    polygons = [Polygon(border_polygon_points(c, RADIUS, 10, SEED = seed)) for c, seed in zip(centers, polygon_seeds)]
-    gdf = gpd.GeoDataFrame(geometry=polygons)
+    centers = generate_non_overlapping_centers(input['shape']['x'], input['shape']['y'], RADIUS, input['n'], MIN_GAP, SEED)
+    if input['type'] == 'polygon':
+        polygon_seeds = [SEED + i for i in range(input['n'])]
+        polygons = [Polygon(border_polygon_points(c, RADIUS, 10, SEED = seed)) for c, seed in zip(centers, polygon_seeds)]
+        gdf = gpd.GeoDataFrame(geometry=polygons)
+    elif input['type'] == 'circle':
+        circles = [Point([c[0], c[1]]) for c in centers]
+        gdf = gpd.GeoDataFrame({"geometry": circles, "radius": [RADIUS,]*len(circles)})
+    else:
+        raise ValueError('Please provide either \'polygon\' or \'circle\' for the image type.')   
+
 
     # get transformations
-    coord_systems = get_coordsystem_transformations(coordinate_systems)
-    if "coordinate_system" in input:
-        coord_system = input["coordinate_system"]
+    coord_systems = get_basetransformations(coordinate_systems)
+    if 'coordinate_system' in input:
+        coord_system = input['coordinate_system']
         if coord_system in coord_systems:
             trans = {coord_system: coord_systems[coord_system]}
         else: 
@@ -73,8 +81,7 @@ def generate_shapemodel(
         trans = {key: Identity()}
 
     # shape model
-    shapemodel = ShapesModel.parse(gdf, 
-                                   transformations = trans)
+    shapemodel = ShapesModel.parse(gdf, transformations = trans)
     
     return shapemodel
 
@@ -98,7 +105,7 @@ def generate_non_overlapping_centers(width, height, radius, n_circles, min_gap=0
             centers.append(candidate)
 
     if len(centers) < n_circles:
-        raise RuntimeError(f"Could only place {len(centers)} circles after {max_tries} attempts.")
+        raise RuntimeError(f'Could only place {len(centers)} circles after {max_tries} attempts.')
 
     return np.array(centers)
 

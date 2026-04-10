@@ -8,7 +8,7 @@ from PIL import Image
 from typing import Optional
 from spatialdata.models import Image2DModel
 from spatialdata.transformations import set_transformation, Identity
-from .generate_transformations import generate_transformations, get_coordsystem_transformations, get_coordsystem_shape
+from .generate_transformations import generate_transformations, get_basetransformations, get_shape
 from .utils import default_shape
 
 def generate_imagemodel(
@@ -22,12 +22,14 @@ def generate_imagemodel(
     ----------
     input : int, optional
         A dictionary of key value pairs with 
-            - the type ("rgb", "grayscale), 
-            - number of layers for the image pyramid (or a single image) and 
-            - name of the coordinate_system (see "coordinate_systems" parameter)
+            - type: the type ('rgb', 'grayscale), 
+            - scale_factors: Scale factors to apply to construct a multiscale image (datatree.DataTree). If None, a xarray.DataArray is returned instead. 
+              Importantly, each scale factor is relative to the previous scale factor. For example, if the scale factors are [2, 2, 2], 
+              the returned multiscale image will have 4 scales. The original image and then the 2x, 4x and 8x downsampled images.
+            - coordinate_system: name of the coordinate_system (see 'coordinate_systems' parameter)
         Example: 
-            [{"type": "rgb", "n_layers": 4}] or
-            [{"type": "grayscale", "n_layers": 4, "coordinate_systems": "global"}]
+            {'type': 'rgb', 'scale_factors': (2,2,2,2)} or
+            {'type': 'grayscale', 'scale_factors': (3,2), 'coordinate_systems': 'global'}
     
     key: str
         the name of the element
@@ -47,33 +49,33 @@ def generate_imagemodel(
     
     # get shape
     input.update(
-        {"shape": get_coordsystem_shape(coordinate_systems, 
-                                        input["coordinate_system"] if "coordinate_system" in input else None)}
+        {'shape': get_shape(coordinate_systems, 
+                            input['coordinate_system'] if 'coordinate_system' in input else None)}
     )
 
     # get source 
-    resource = files("dummy_spatialdata")
+    resource = files('dummy_spatialdata')
 
     # get image type
-    if input["type"] == "rgb":
-        with as_file(resource.joinpath("examples", "bird-color.png")) as path:
+    if input['type'] == 'rgb':
+        with as_file(resource.joinpath('examples', 'bird-color.png')) as path:
             img = Image.open(path)
             img = resize_image(img, input)
             img = np.array(img).astype(np.uint8)
         img = img.transpose((2, 0, 1))
-    elif input["type"] == "grayscale":
-        with as_file(resource.joinpath("examples", "nuclei.tif")) as path:
+    elif input['type'] == 'grayscale':
+        with as_file(resource.joinpath('examples', 'nuclei.tif')) as path:
             img = Image.open(path)
             img = resize_image(img, input)
             img = np.array(img).astype(np.uint8)
         img = img.reshape(1, *img.shape)
     else:
-        raise ValueError("Please type either 'rgb' or 'grayscale' for the image type.")   
+        raise ValueError('Please type either \'rgb\' or \'grayscale\' for the image type.')   
     
     # get transformations
-    coord_systems = get_coordsystem_transformations(coordinate_systems)
-    if "coordinate_system" in input:
-        coord_system = input["coordinate_system"]
+    coord_systems = get_basetransformations(coordinate_systems)
+    if 'coordinate_system' in input:
+        coord_system = input['coordinate_system']
         if coord_system in coord_systems:
             trans = {coord_system: coord_systems[coord_system]}
         else: 
@@ -82,16 +84,18 @@ def generate_imagemodel(
         trans = {key: Identity()}
 
     # image model
+    if 'scale_factors' not in input:
+        input["scale_factors"] = []
     imagemodel = Image2DModel.parse(data=img, 
-                                    scale_factors=(2,) * (input["n_layers"]-1), 
+                                    scale_factors=input['scale_factors'],
                                     transformations = trans)
 
     return imagemodel
 
 def resize_image(image: Image, input: dict) -> Image:
-    if "shape" not in input:
+    if 'shape' not in input:
         return image
-    new_width = input["shape"]['x']
-    new_height = input["shape"]['y']
+    new_width = input['shape']['x']
+    new_height = input['shape']['y']
     resized = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
     return resized

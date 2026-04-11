@@ -14,7 +14,7 @@ from .utils import default_shape
 def generate_pointmodel(
     input: Optional[dict] = None,
     key: Optional[str] = None,
-    coordinate_systems: Optional[dict] = None,
+    coordinate_systems: dict = {},
     SEED: Optional[int] = 42
 ) -> PointsModel:
     """Generate a dummy PointsModel object with specified elements.

@@ -14,7 +14,7 @@ from .utils import default_shape
 def generate_shapemodel(
     input: Optional[dict] = None,
     key: Optional[str] = None,
-    coordinate_systems: Optional[dict] = None,
+    coordinate_systems: dict = {},
     SEED: Optional[int] = 42
 ) -> ShapesModel:
     """Generate a dummy ShapesModel object with specified elements.

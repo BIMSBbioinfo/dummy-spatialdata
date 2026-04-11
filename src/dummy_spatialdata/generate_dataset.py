@@ -21,7 +21,7 @@ def generate_dataset(
     shapes: Optional[list] = None,
     points: Optional[list] = None,
     tables: Optional[list] = None,
-    coordinate_systems: Optional[dict] = None,
+    coordinate_systems: dict = {},
     SEED: Optional[int] = 42
 ) -> sd.SpatialData:
     """Generate a dummy SpatialData object with specified elements.

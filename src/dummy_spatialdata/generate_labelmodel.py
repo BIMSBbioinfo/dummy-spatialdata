@@ -12,7 +12,7 @@ from .utils import default_shape
 def generate_labelmodel(
     input: Optional[dict] = None,
     key: Optional[str] = None,
-    coordinate_systems: Optional[dict] = None
+    coordinate_systems: dict = {}
 ) -> Labels2DModel:
     """Generate a dummy Labels2DModel object with specified elements.
 

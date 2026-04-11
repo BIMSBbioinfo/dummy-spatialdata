@@ -14,7 +14,7 @@ from .utils import default_shape
 def generate_imagemodel(
     input: Optional[dict] = None,
     key: Optional[str] = None,
-    coordinate_systems: Optional[dict] = None
+    coordinate_systems: dict = {}
 ) -> Image2DModel:
     """Generate a dummy Image2DModel object with specified elements.
 

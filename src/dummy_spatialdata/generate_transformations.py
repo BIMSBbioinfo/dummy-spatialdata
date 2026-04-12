@@ -106,7 +106,6 @@ def get_basetransformations(
     coordinate_systems: dict = {}
 ) -> dict:
     
-    print(coordinate_systems)
     if not isinstance(coordinate_systems, dict):
         raise ValueError('Malformed coordinate system! e.g. \{\'global\': \{\'transformations\': [\'affine\'], \'shape\': \{\'x\': 2000, \'y\': 2000\}\}')
 

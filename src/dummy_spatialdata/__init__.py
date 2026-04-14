@@ -5,7 +5,7 @@ from .generate_imagemodel import generate_imagemodel
 from .generate_labelmodel import generate_labelmodel
 from .generate_shapemodel import generate_shapemodel
 from .generate_pointmodel import generate_pointmodel
-from .generate_tablemodel import generate_tablemodel
+from .generate_tablemodel import generate_tablemodel, generate_anndata
 from .generate_transformations import (
     generate_transformations,
     get_basetransformations,

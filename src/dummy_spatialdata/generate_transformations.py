@@ -59,9 +59,9 @@ def generate_transformations(
         elif tr == 'mapAxis':
             tr = MapAxis({"x": "y", "y": "x"})
         elif tr == 'translation':
-            tr = Translation([10, 20], axes = ('x', 'y'))
+            tr = Translation([10, -20], axes = ('x', 'y'))
         elif tr == 'scale':
-            tr = Scale([0.5, 0.5], axes = ('x', 'y'))
+            tr = Scale([0.3, 1.3], axes = ('x', 'y'))
         elif tr == 'rotation':
             theta = np.deg2rad(15)
             c = np.cos(theta)

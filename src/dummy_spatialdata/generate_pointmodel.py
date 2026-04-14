@@ -47,10 +47,12 @@ def generate_pointmodel(
         return None
 
     # get shape
-    input.update(
-        {'shape': get_shape(coordinate_systems, 
-                            input['coordinate_system'] if 'coordinate_system' in input else None)}
-    )
+    # input.update(
+    #     {'shape': get_shape(coordinate_systems, 
+    #                        input['coordinate_system'] if 'coordinate_system' in input else None)}
+    #)
+    if 'shape' not in input:
+        input.update({'shape': default_shape()})
 
     # generate points
     RADIUS = 0.08 * min(input['shape']['x'], input['shape']['y'])
@@ -62,10 +64,13 @@ def generate_pointmodel(
     coord_systems = get_basetransformations(coordinate_systems)
     if 'coordinate_system' in input:
         coord_system = input['coordinate_system']
-        if coord_system in coord_systems:
-            trans = {coord_system: coord_systems[coord_system]}
-        else: 
-            trans = {key: Identity()}
+        trans = {}
+        for crd in coord_system:
+            if crd in coord_systems:
+                # trans = {crd: coord_systems[crd]}
+                trans.update({crd: coord_systems[crd]})
+            else: 
+                trans = {key: Identity()}
     else:
         trans = {key: Identity()}
 

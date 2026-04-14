@@ -59,7 +59,14 @@ def generate_shapemodel(
     RADIUS = 0.08 * min(input['shape']['x'], input['shape']['y'])
     MIN_GAP = 0.01 * min(input['shape']['x'], input['shape']['y'])
 
-    centers = generate_non_overlapping_centers(input['shape']['x'], input['shape']['y'], RADIUS, input['n'], MIN_GAP, SEED)
+    if 'overlapping' not in input:
+        input['overlapping'] = True
+    if input['overlapping']:
+        centers = generate_regular_centers(input['shape']['x'], input['shape']['y'], RADIUS, input['n'], SEED)
+    else:
+        centers = generate_non_overlapping_centers(input['shape']['x'], input['shape']['y'], RADIUS, input['n'], min_gap=MIN_GAP, SEED=SEED)
+    # centers = generate_non_overlapping_centers(input['shape']['x'], input['shape']['y'], RADIUS, input['n'], MIN_GAP, SEED)
+    # centers = generate_regular_centers(input['shape']['x'], input['shape']['y'], RADIUS, input['n'], SEED)
     if input['type'] == 'polygon':
         polygon_seeds = [SEED + i for i in range(input['n'])]
         polygons = [Polygon(border_polygon_points(c, RADIUS, 10, SEED = seed)) for c, seed in zip(centers, polygon_seeds)]
@@ -112,6 +119,19 @@ def generate_non_overlapping_centers(width, height, radius, n_circles, min_gap=0
 
     if len(centers) < n_circles:
         raise RuntimeError(f'Could only place {len(centers)} circles after {max_tries} attempts.')
+
+    return np.array(centers)
+
+def generate_regular_centers(width, height, radius, n_circles, SEED=1):
+    centers = []
+    tries = 0
+    rng = np.random.default_rng(SEED)
+
+    for _ in range(n_circles):
+        x = rng.uniform(radius, width - radius)
+        y = rng.uniform(radius, height - radius)
+        candidate = (x, y)
+        centers.append(candidate)
 
     return np.array(centers)
 

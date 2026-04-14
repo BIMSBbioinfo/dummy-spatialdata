@@ -21,6 +21,7 @@ __all__ = [
     "generate_pointmodel"
     "generate_tablemodel",
     "generate_transformations",
+    "generate_anndata",
     "utils"
 ]
 

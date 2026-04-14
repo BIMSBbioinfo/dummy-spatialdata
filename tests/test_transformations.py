@@ -62,6 +62,9 @@ def test_transformations():
     trans = generate_transformations({'global': {'transformations': ['scale'], 'shape': {'x': 1000, 'y': 1000}}})
     assert isinstance(trans['global'], Scale)
 
+    trans = generate_transformations({'global3': {'transformations': ['rotation'], 'shape': {'x': 1000, 'y': 1000}}})
+    assert isinstance(trans['global3'], Affine) # the rotation is basically returning an Affine transformation, for now
+
     trans = generate_transformations({'global3': {'transformations': ['affine'], 'shape': {'x': 1000, 'y': 1000}}})
     assert isinstance(trans['global3'], Affine)
 

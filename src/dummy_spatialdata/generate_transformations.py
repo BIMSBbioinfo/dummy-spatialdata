@@ -10,6 +10,8 @@ from spatialdata.transformations import (
     Identity
 )
 
+import numpy as np
+
 def generate_transformations(
     trans: Optional[dict] = None
 ) -> list[BaseTransformation]:
@@ -60,6 +62,16 @@ def generate_transformations(
             tr = Translation([10, 20], axes = ('x', 'y'))
         elif tr == 'scale':
             tr = Scale([0.5, 0.5], axes = ('x', 'y'))
+        elif tr == 'rotation':
+            theta = np.deg2rad(15)
+            c = np.cos(theta)
+            s = np.sin(theta)
+            tr = Affine(matrix = [
+                    [c, -s, 0],
+                    [s, c, 0],
+                    [0, 0, 1],
+                ], 
+                input_axes=('x', 'y'), output_axes=('x', 'y'))
         elif tr == 'affine':
             tr = Affine(matrix = [
                     [0.5, 0.2, 0],

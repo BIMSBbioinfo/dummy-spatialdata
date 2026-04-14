@@ -14,6 +14,9 @@ from .generate_pointmodel import generate_pointmodel
 from .generate_tablemodel import generate_tablemodel    
 from .generate_transformations import generate_transformations
 from spatialdata.models import TableModel
+from spatialdata import get_element_instances
+
+from pandas import RangeIndex
 
 def generate_dataset(
     images: Optional[list] = None,
@@ -141,6 +144,11 @@ def generate_dataset(
             instance_key = tbl.uns['spatialdata_attrs']['instance_key']
             if region in sdata._shared_keys:
                 element = getattr(sdata, element_type + 's')[region]
-                tbl.obs['instance_id'] = element.index    
+                if element_type == 'shape':
+                    tbl.obs['instance_id'] = element.index    
+                elif element_type == 'label':
+                    tbl.obs['instance_id'] = get_element_instances(element)
+                else:
+                    raise ValueError(f"Invalid element type {element_type} in region {region}. Must be either 'shape' or 'label'.")    
 
     return sdata

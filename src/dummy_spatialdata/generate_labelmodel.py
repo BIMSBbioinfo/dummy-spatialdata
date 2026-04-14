@@ -60,8 +60,8 @@ def generate_labelmodel(
 
     arr = np.zeros((rows, cols), dtype=int)
     mask = np.random.rand(rows, cols) < prob_nonzero
-    arr[mask] = np.random.randint(1, input['n'], size=mask.sum())
-
+    arr[mask] = np.random.randint(1, input['n']+1, size=mask.sum())
+    
     # get transformations
     coord_systems = get_basetransformations(coordinate_systems)
     if 'coordinate_system' in input:

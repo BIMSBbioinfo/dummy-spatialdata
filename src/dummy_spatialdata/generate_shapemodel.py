@@ -48,10 +48,6 @@ def generate_shapemodel(
         return None
 
     # get shape
-    # input.update(
-    #     {'shape': get_shape(coordinate_systems, 
-    #                        input['coordinate_system'] if 'coordinate_system' in input else None)}
-    #)
     if 'shape' not in input:
         input.update({'shape': default_shape()})
 
@@ -85,13 +81,11 @@ def generate_shapemodel(
         trans = {}
         for crd in coord_system:
             if crd in coord_systems:
-                # trans = {crd: coord_systems[crd]}
                 trans.update({crd: coord_systems[crd]})
             else: 
                 trans = {key: Identity()}
     else:
         trans = {key: Identity()}
-
 
     # shape model
     shapemodel = ShapesModel.parse(gdf, transformations = trans)

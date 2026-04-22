@@ -46,10 +46,6 @@ def generate_labelmodel(
         return None
     
     # get shape
-    # input.update(
-    #     {'shape': get_shape(coordinate_systems, 
-    #                        input['coordinate_system'] if 'coordinate_system' in input else None)}
-    #)
     if 'shape' not in input:
         input.update({'shape': default_shape()})
 
